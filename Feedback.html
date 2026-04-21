@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Cycling Coach Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .form-content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #202124;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #202124;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .required {
+            color: #d32f2f;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .rating-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .rating-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #dadce0;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #5f6368;
+            transition: all 0.2s;
+        }
+
+        .rating-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .rating-btn.selected {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        .checkbox-group,
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .checkbox-item,
+        .radio-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .checkbox-label,
+        .radio-label {
+            margin: 0;
+            font-size: 14px;
+            color: #202124;
+            cursor: pointer;
+        }
+
+        .submit-group {
+            margin-top: 32px;
+            text-align: center;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 32px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 200px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 60px 40px;
+            background: #f0fdf4;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .success-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .success-message h2 {
+            font-size: 24px;
+            color: #15803d;
+            margin-bottom: 8px;
+        }
+
+        .success-message p {
+            color: #4b5563;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #80868b;
+            margin-top: 4px;
+        }
+
+        .form-wrapper {
+            display: none;
+        }
+
+        .form-wrapper.show {
+            display: block;
+        }
+
+        .error {
+            color: #d32f2f;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚴 Cycling Coach Pro</h1>
+            <p>Votre feedback nous aide à améliorer l'app</p>
+        </div>
+
+        <div class="form-content">
+            <form id="feedbackForm">
+                <!-- SECTION 1: IDENTIFICATION -->
+                <div class="section">
+                    <div class="section-title">À propos de vous</div>
+
+                    <div class="form-group">
+                        <label for="firstName">Prénom <span class="required">*</span></label>
+                        <input type="text" id="firstName" name="firstName" placeholder="Ex: Pierre" required>
+                        <div class="error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Nom <span class="required">*</span></label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Ex: Dupont" required>
+                        <div class="error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email (pour vous relancer) <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="Ex: pierre@email.com" required>
+                        <div class="error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stravaName">Nom Strava (optionnel)</label>
+                        <input type="text" id="stravaName" name="stravaName" placeholder="Votre profil Strava">
+                        <p class="hint">Pour nous aider à identifier votre compte dans l'app</p>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: SENTIMENT GLOBAL -->
+                <div class="section">
+                    <div class="section-title">Impression générale</div>
+
+                    <div class="form-group">
+                        <label>Quelle est votre impression globale de l'app ? <span class="required">*</span></label>
+                        <div class="rating-group" id="globalRating">
+                            <button type="button" class="rating-btn" data-value="1" title="Mauvais">1</button>
+                            <button type="button" class="rating-btn" data-value="2" title="Faible">2</button>
+                            <button type="button" class="rating-btn" data-value="3" title="Moyen">3</button>
+                            <button type="button" class="rating-btn" data-value="4" title="Bon">4</button>
+                            <button type="button" class="rating-btn" data-value="5" title="Très bon">5</button>
+                            <button type="button" class="rating-btn" data-value="6" title="Excellent">6</button>
+                            <button type="button" class="rating-btn" data-value="7" title="Formidable">7</button>
+                            <button type="button" class="rating-btn" data-value="8" title="Ouah">8</button>
+                            <button type="button" class="rating-btn" data-value="9" title="Wow">9</button>
+                            <button type="button" class="rating-btn" data-value="10" title="Parfait">10</button>
+                        </div>
+                        <div class="error"></div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: FEATURES TESTÉES -->
+                <div class="section">
+                    <div class="section-title">Quelles features avez-vous testées ?</div>
+
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="feat-connexion" name="features" value="Connexion Strava">
+                                <label for="feat-connexion" class="checkbox-label">Connexion Strava</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="feat-dashboard" name="features" value="Dashboard d'entraînement">
+                                <label for="feat-dashboard" class="checkbox-label">Dashboard d'entraînement</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="feat-analyse" name="features" value="Analyse IA de performance">
+                                <label for="feat-analyse" class="checkbox-label">Analyse IA de performance</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="feat-coach" name="features" value="Coach IA (recommandations)">
+                                <label for="feat-coach" class="checkbox-label">Coach IA (recommandations)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="feat-planning" name="features" value="Planning d'entraînement">
+                                <label for="feat-planning" class="checkbox-label">Planning d'entraînement</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="feat-charts" name="features" value="Graphiques et stats">
+                                <label for="feat-charts" class="checkbox-label">Graphiques et stats</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="feat-autres" name="features" value="Autre">
+                                <label for="feat-autres" class="checkbox-label">Autre</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: RETOURS PAR ASPECT -->
+                <div class="section">
+                    <div class="section-title">Avis par aspect</div>
+
+                    <div class="form-group">
+                        <label>Facilité d'utilisation <span class="required">*</span></label>
+                        <div class="rating-group" id="usabilityRating">
+                            <button type="button" class="rating-btn" data-value="1">1</button>
+                            <button type="button" class="rating-btn" data-value="2">2</button>
+                            <button type="button" class="rating-btn" data-value="3">3</button>
+                            <button type="button" class="rating-btn" data-value="4">4</button>
+                            <button type="button" class="rating-btn" data-value="5">5</button>
+                        </div>
+                        <p class="hint">1 = Très difficile | 5 = Très facile</p>
+                        <div class="error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Qualité des conseils IA <span class="required">*</span></label>
+                        <div class="rating-group" id="aiQualityRating">
+                            <button type="button" class="rating-btn" data-value="1">1</button>
+                            <button type="button" class="rating-btn" data-value="2">2</button>
+                            <button type="button" class="rating-btn" data-value="3">3</button>
+                            <button type="button" class="rating-btn" data-value="4">4</button>
+                            <button type="button" class="rating-btn" data-value="5">5</button>
+                        </div>
+                        <p class="hint">1 = Peu pertinents | 5 = Très pertinents</p>
+                        <div class="error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Design et ergonomie <span class="required">*</span></label>
+                        <div class="rating-group" id="designRating">
+                            <button type="button" class="rating-btn" data-value="1">1</button>
+                            <button type="button" class="rating-btn" data-value="2">2</button>
+                            <button type="button" class="rating-btn" data-value="3">3</button>
+                            <button type="button" class="rating-btn" data-value="4">4</button>
+                            <button type="button" class="rating-btn" data-value="5">5</button>
+                        </div>
+                        <p class="hint">1 = Peu attrayant | 5 = Très attrayant</p>
+                        <div class="error"></div>
+                    </div>
+                </div>
+
+                <!-- SECTION 5: POINTS FORTS -->
+                <div class="section">
+                    <div class="section-title">Ce qui vous a plu</div>
+
+                    <div class="form-group">
+                        <label>Qu'est-ce qui vous a le plus plu ? <span class="required">*</span></label>
+                        <textarea id="strengths" name="strengths" placeholder="Ex: L'intégration Strava est fluide, les conseils IA sont pertinents..." required></textarea>
+                        <div class="error"></div>
+                    </div>
+                </div>
+
+                <!-- SECTION 6: POINTS FAIBLES -->
+                <div class="section">
+                    <div class="section-title">Ce qui peut être amélioré</div>
+
+                    <div class="form-group">
+                        <label>Avez-vous rencontré des bugs ou dysfonctionnements ?</label>
+                        <textarea id="bugs" name="bugs" placeholder="Décrivez les problèmes rencontrés (optionnel)"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Qu'est-ce qui peut être amélioré ? <span class="required">*</span></label>
+                        <textarea id="improvements" name="improvements" placeholder="Ex: Ajouter un mode offline, améliorer la pagination..." required></textarea>
+                        <div class="error"></div>
+                    </div>
+                </div>
+
+                <!-- SECTION 7: SUGGESTIONS -->
+                <div class="section">
+                    <div class="section-title">Suggestions futures</div>
+
+                    <div class="form-group">
+                        <label>Avez-vous des idées de features manquantes ?</label>
+                        <textarea id="suggestions" name="suggestions" placeholder="Ex: Export PDF des plans, mode groupe/défi avec copains..."></textarea>
+                    </div>
+                </div>
+
+                <!-- SECTION 8: CONTACT -->
+                <div class="section">
+                    <div class="section-title">Autorisation</div>
+
+                    <div class="form-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="contact" name="contact" value="true">
+                            <label for="contact" class="checkbox-label">Vous pouvez me recontacter pour approfondir mes retours</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOUTON SUBMIT -->
+                <div class="submit-group">
+                    <button type="submit" class="submit-btn">Envoyer mon feedback</button>
+                </div>
+            </form>
+
+            <div class="success-message" id="successMessage">
+                <div class="success-icon">✓</div>
+                <h2>Merci beaucoup !</h2>
+                <p>Votre feedback a été enregistré et va nous aider à améliorer l'app.</p>
+                <p>À bientôt pour la prochaine version 🚴</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('feedbackForm');
+        const successMessage = document.getElementById('successMessage');
+        let formData = {
+            globalRating: null,
+            usabilityRating: null,
+            aiQualityRating: null,
+            designRating: null
+        };
+
+        // Setup rating buttons
+        ['globalRating', 'usabilityRating', 'aiQualityRating', 'designRating'].forEach(id => {
+            const group = document.getElementById(id);
+            const buttons = group.querySelectorAll('.rating-btn');
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    buttons.forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    formData[id] = btn.dataset.value;
+                });
+            });
+        });
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Collect all form data
+            const formDataObj = {
+                timestamp: new Date().toISOString(),
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                stravaName: document.getElementById('stravaName').value,
+                globalRating: formData.globalRating,
+                features: Array.from(document.querySelectorAll('input[name="features"]:checked')).map(cb => cb.value),
+                usabilityRating: formData.usabilityRating,
+                aiQualityRating: formData.aiQualityRating,
+                designRating: formData.designRating,
+                strengths: document.getElementById('strengths').value,
+                bugs: document.getElementById('bugs').value,
+                improvements: document.getElementById('improvements').value,
+                suggestions: document.getElementById('suggestions').value,
+                allowContact: document.getElementById('contact').checked
+            };
+
+            // Simple validation
+            if (!formData.globalRating) {
+                showError('globalRating', 'Veuillez évaluer votre impression générale');
+                return;
+            }
+            if (!formData.usabilityRating) {
+                showError('usabilityRating', 'Veuillez évaluer la facilité d\'utilisation');
+                return;
+            }
+            if (!formData.aiQualityRating) {
+                showError('aiQualityRating', 'Veuillez évaluer la qualité IA');
+                return;
+            }
+            if (!formData.designRating) {
+                showError('designRating', 'Veuillez évaluer le design');
+                return;
+            }
+            if (!document.getElementById('strengths').value.trim()) {
+                showError('strengths', 'Veuillez indiquer ce qui vous a plu');
+                return;
+            }
+            if (!document.getElementById('improvements').value.trim()) {
+                showError('improvements', 'Veuillez indiquer les améliorations');
+                return;
+            }
+
+            // Try to send to Google Sheets via a webhook (or save locally)
+            // For now, we'll just show the success message
+            try {
+                // If you have a backend, send it here
+                // await fetch('/api/feedback', { method: 'POST', body: JSON.stringify(formDataObj) })
+
+                // For local testing, just log and show success
+                console.log('Feedback data:', formDataObj);
+
+                // Show success message
+                form.style.display = 'none';
+                successMessage.classList.add('show');
+
+                // Option: store in localStorage for manual export
+                const allFeedback = JSON.parse(localStorage.getItem('cycling-coach-feedback') || '[]');
+                allFeedback.push(formDataObj);
+                localStorage.setItem('cycling-coach-feedback', JSON.stringify(allFeedback));
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Erreur lors de l\'envoi. Veuillez réessayer.');
+            }
+        });
+
+        function showError(fieldId, message) {
+            // Find the error div associated with the field
+            const errorDiv = document.querySelector(`#${fieldId}`).parentElement.querySelector('.error') || 
+                           document.querySelector(`[id="${fieldId}"]`).parentElement.parentElement.querySelector('.error');
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.classList.add('show');
+            }
+        }
+
+        // Clear errors when user interacts
+        form.addEventListener('change', () => {
+            document.querySelectorAll('.error').forEach(err => {
+                err.classList.remove('show');
+            });
+        });
+    </script>
+</body>
+</html>
