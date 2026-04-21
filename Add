@@ -1,0 +1,5 @@
+# Dans le repo
+cp cycling-coach-feedback-form.html index.html
+git add .
+git commit -m "Add feedback form"
+git push
